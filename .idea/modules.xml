@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/springboot-first-app.iml" filepath="$PROJECT_DIR$/.idea/springboot-first-app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/springboot-first-app.springboot-first-app.main~1.iml" filepath="$PROJECT_DIR$/.idea/modules/springboot-first-app.springboot-first-app.main~1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/springboot-first-app.springboot-first-app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/springboot-first-app.springboot-first-app.main.iml" />
     </modules>
   </component>
 </project>
