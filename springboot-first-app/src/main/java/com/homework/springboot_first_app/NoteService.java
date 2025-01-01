@@ -6,41 +6,36 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class NoteService {
-    private final Map<Long, Note> notes = new HashMap<>();
+    private final NoteRepository noteRepository;
 
-    private final AtomicLong idGenerator = new AtomicLong(1);
+    public NoteService(NoteRepository noteRepository) {
+        this.noteRepository = noteRepository;
+    }
 
     public List<Note> listAll() {
-        return new ArrayList<>(notes.values());
+        return noteRepository.findAll();
     }
 
     public Note add(Note note) {
-        long id = idGenerator.getAndIncrement();
-        note.setId(id);
-        notes.put(id, note);
-        return note;
+        return noteRepository.save(note);
     }
 
     public void deleteById(long id) {
-        if (!notes.containsKey(id)) {
+        if (!noteRepository.existsById(id)) {
             throw new NoSuchElementException("Note with id " + id + " does not exist.");
         }
-        notes.remove(id);
+        noteRepository.deleteById(id);
     }
 
     public void update(Note note) {
-        if (!notes.containsKey(note.getId())) {
+        if (!noteRepository.existsById(note.getId())) {
             throw new NoSuchElementException("Note with id " + note.getId() + " does not exist.");
         }
-        Note existingNote = notes.get(note.getId());
-        existingNote.setTitle(note.getTitle());
-        existingNote.setContent(note.getContent());
+        noteRepository.save(note);
     }
 
     public Note getById(long id) {
-        if (!notes.containsKey(id)) {
-            throw new NoSuchElementException("Note with id " + id + " does not exist.");
-        }
-        return notes.get(id);
+        return noteRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Note with id " + id + " does not exist."));
     }
 }

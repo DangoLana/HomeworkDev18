@@ -1,13 +1,18 @@
 package com.homework.springboot_first_app;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
+@Entity
 public class Note {
+    @Id
+    @GeneratedValue
     private Long id;
     private String title;
     private String content;
 
-    public Note() {
-    }
+    public Note() {}
 
     public Note(Long id, String title, String content) {
         this.id = id;
