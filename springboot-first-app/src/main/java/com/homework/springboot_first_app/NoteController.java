@@ -7,44 +7,66 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.NoSuchElementException;
+
 @Controller
 @RequestMapping("/note")
 public class NoteController {
 
-    private final List<Note> notes = new ArrayList<>();
+    private final NoteService noteService;
 
-    public NoteController() {
-        notes.add(new Note(1L, "First Note", "Content of the first note"));
-        notes.add(new Note(2L, "Second Note", "Content of the second note"));
+    public NoteController(NoteService noteService) {
+        this.noteService = noteService;
     }
 
     @GetMapping("/list")
     public String getNotesList(Model model) {
+        List<Note> notes = noteService.listAll();
         model.addAttribute("notes", notes);
         return "note-list";
     }
 
     @PostMapping("/delete")
     public String deleteNote(@RequestParam Long id) {
-        notes.removeIf(note -> note.getId().equals(id));
+        try {
+            noteService.deleteById(id);
+        } catch (NoSuchElementException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
         return "redirect:/note/list";
     }
 
     @GetMapping("/edit")
     public String getEditPage(@RequestParam Long id, Model model) {
-        Optional<Note> note = notes.stream().filter(n -> n.getId().equals(id)).findFirst();
-        model.addAttribute("note", note.orElse(null));
+        Note note = noteService.getById(id);
+        model.addAttribute("note", note);
         return "note-edit";
     }
 
     @PostMapping("/edit")
     public String editNote(@RequestParam Long id, @RequestParam String title, @RequestParam String content) {
-        for (Note note : notes) {
-            if (note.getId().equals(id)) {
-                note.setTitle(title);
-                note.setContent(content);
-            }
+        try {
+            Note existingNote = noteService.getById(id);
+            existingNote.setTitle(title);
+            existingNote.setContent(content);
+            noteService.update(existingNote);
+        } catch (NoSuchElementException e) {
+            System.err.println("Error: " + e.getMessage());
         }
+        return "redirect:/note/list";
+    }
+
+    @GetMapping("/create")
+    public String getCreatePage() {
+        return "note-create";
+    }
+
+    @PostMapping("/create")
+    public String createNote(@RequestParam String title, @RequestParam String content) {
+        Note newNote = new Note();
+        newNote.setTitle(title);
+        newNote.setContent(content);
+        noteService.add(newNote);
         return "redirect:/note/list";
     }
 }
