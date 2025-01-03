@@ -3,13 +3,21 @@ package com.homework.springboot_first_app;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Note {
     @Id
     @GeneratedValue
     private Long id;
+
+    @NotBlank(message = "Title cannot be blank")
+    @Size(max = 100, message = "Title cannot exceed 100 characters")
     private String title;
+
+    @NotBlank(message = "Content cannot be blank")
+    @Size(max = 500, message = "Content cannot exceed 500 characters")
     private String content;
 
     public Note() {}
